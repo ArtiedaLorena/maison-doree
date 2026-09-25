@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { Instagram, Facebook, ExternalLink, MapPin, Phone, Mail } from "lucide-react";
 import { RESTAURANT_INFO } from "@/lib/constants";
 
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(RESTAURANT_INFO.address)}`;
+
 export default function Footer() {
   return (
     <footer
@@ -12,7 +14,6 @@ export default function Footer() {
         borderTop: "1px solid rgba(201, 169, 110, 0.1)",
       }}
     >
-      {/* Main Footer */}
       <div
         style={{
           maxWidth: "1280px",
@@ -20,17 +21,7 @@ export default function Footer() {
           padding: "48px 32px",
         }}
       >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.5fr 1fr 1fr",
-            gap: "48px",
-            alignItems: "start",
-          }}
-          className="grid-cols-1 md:grid-cols-3"
-        >
-
-          {/* Columna 1 — Brand */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-12">
           <div
             style={{
               display: "flex",
@@ -38,7 +29,6 @@ export default function Footer() {
               gap: "12px",
             }}
           >
-            {/* Logo */}
             <div
               style={{
                 height: "90px",
@@ -60,7 +50,6 @@ export default function Footer() {
               />
             </div>
 
-            {/* Descripción */}
             <p
               style={{
                 fontFamily: "var(--font-montserrat)",
@@ -73,7 +62,6 @@ export default function Footer() {
               {RESTAURANT_INFO.description}
             </p>
 
-            {/* Redes sociales */}
             <div
               style={{
                 display: "flex",
@@ -120,7 +108,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Columna 2 — Horarios */}
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <p
               style={{
@@ -135,7 +122,6 @@ export default function Footer() {
               Horarios
             </p>
 
-            {/* Separador */}
             <div
               style={{
                 width: "24px",
@@ -206,7 +192,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Columna 3 — Contacto */}
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <p
               style={{
@@ -221,7 +206,6 @@ export default function Footer() {
               Contacto
             </p>
 
-            {/* Separador */}
             <div
               style={{
                 width: "24px",
@@ -233,16 +217,32 @@ export default function Footer() {
 
             <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               {[
-                { icon: MapPin, value: RESTAURANT_INFO.address },
-                { icon: Phone, value: RESTAURANT_INFO.phone },
-                { icon: Mail, value: RESTAURANT_INFO.email },
+                {
+                  icon: MapPin,
+                  value: RESTAURANT_INFO.address,
+                  href: mapsUrl,
+                },
+                {
+                  icon: Phone,
+                  value: RESTAURANT_INFO.phone,
+                  href: `tel:${RESTAURANT_INFO.phone.replace(/\s/g, "")}`,
+                },
+                {
+                  icon: Mail,
+                  value: RESTAURANT_INFO.email,
+                  href: `mailto:${RESTAURANT_INFO.email}`,
+                },
               ].map((item) => (
-                <div
+                <a
                   key={item.value}
+                  href={item.href}
+                  target={item.href.startsWith("http") ? "_blank" : undefined}
+                  rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
                   style={{
                     display: "flex",
                     alignItems: "flex-start",
                     gap: "10px",
+                    textDecoration: "none",
                   }}
                 >
                   <item.icon
@@ -253,7 +253,7 @@ export default function Footer() {
                       flexShrink: 0,
                     }}
                   />
-                  <p
+                  <span
                     style={{
                       fontFamily: "var(--font-montserrat)",
                       fontSize: "12px",
@@ -262,13 +262,13 @@ export default function Footer() {
                     }}
                   >
                     {item.value}
-                  </p>
-                </div>
+                  </span>
+                </a>
               ))}
             </div>
 
-            {/* CTA Reservar */}
             <motion.button
+              type="button"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() =>
@@ -302,11 +302,9 @@ export default function Footer() {
               Reservar Mesa
             </motion.button>
           </div>
-
         </div>
       </div>
 
-      {/* Bottom Bar */}
       <div
         style={{
           borderTop: "1px solid rgba(255,255,255,0.04)",

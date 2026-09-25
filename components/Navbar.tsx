@@ -15,25 +15,35 @@ const navLinks = [
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isOpen]);
 
   const handleNavClick = (href: string) => {
     setIsOpen(false);
     const element = document.querySelector(href);
     element?.scrollIntoView({ behavior: "smooth" });
   };
-
-  if (!mounted) return null;
 
   return (
     <>
@@ -61,6 +71,7 @@ export default function Navbar() {
         }}
       >
         <nav
+          aria-label="Principal"
           style={{
             width: "100%",
             maxWidth: "1280px",
@@ -76,11 +87,11 @@ export default function Navbar() {
               gap: "24px",
             }}
           >
-
-            {/* Logo */}
-            <motion.div
+            <motion.button
+              type="button"
               whileHover={{ scale: 1.02 }}
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              aria-label="Ir al inicio"
               style={{
                 cursor: "pointer",
                 height: "90px",
@@ -90,6 +101,9 @@ export default function Navbar() {
                 justifyContent: "flex-start",
                 flexShrink: 0,
                 overflow: "hidden",
+                background: "none",
+                border: "none",
+                padding: 0,
               }}
             >
               <img
@@ -102,9 +116,8 @@ export default function Navbar() {
                   objectPosition: "center center",
                 }}
               />
-            </motion.div>
+            </motion.button>
 
-            {/* Centro — Nav Links */}
             <ul
               className="hidden md:flex"
               style={{
@@ -118,7 +131,9 @@ export default function Navbar() {
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <button
+                    type="button"
                     onClick={() => handleNavClick(link.href)}
+                    className="nav-link"
                     style={{
                       fontFamily: "var(--font-montserrat)",
                       fontSize: "11px",
@@ -133,34 +148,16 @@ export default function Navbar() {
                       padding: "4px 0",
                       transition: "color 0.3s ease",
                     }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.color = "#C9A96E")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.color = "rgba(255,255,255,0.85)")
-                    }
                   >
                     {link.label}
-                    {/* Underline animado */}
-                    <span
-                      style={{
-                        position: "absolute",
-                        bottom: "-2px",
-                        left: 0,
-                        width: "0%",
-                        height: "1px",
-                        background: "#C9A96E",
-                        transition: "width 0.3s ease",
-                      }}
-                      className="nav-underline"
-                    />
+                    <span className="nav-underline" />
                   </button>
                 </li>
               ))}
             </ul>
 
-            {/* Derecha — CTA */}
             <motion.button
+              type="button"
               whileHover={{
                 backgroundColor: "#C9A96E",
                 color: "#1A1A1A",
@@ -188,11 +185,14 @@ export default function Navbar() {
               Reservar Mesa
             </motion.button>
 
-            {/* Mobile — Hamburguesa */}
             <motion.button
+              type="button"
               whileTap={{ scale: 0.9 }}
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden"
+              aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
+              aria-expanded={isOpen}
+              aria-controls="mobile-menu"
               style={{
                 color: "#C9A96E",
                 background: "none",
@@ -207,15 +207,17 @@ export default function Navbar() {
             >
               {isOpen ? <X size={20} /> : <Menu size={20} />}
             </motion.button>
-
           </div>
         </nav>
       </motion.header>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menú de navegación"
             initial={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
             animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
             exit={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
@@ -233,7 +235,6 @@ export default function Navbar() {
               gap: "8px",
             }}
           >
-            {/* Logo mobile */}
             <motion.img
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -248,7 +249,6 @@ export default function Navbar() {
               }}
             />
 
-            {/* Separador */}
             <motion.div
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
@@ -261,9 +261,9 @@ export default function Navbar() {
               }}
             />
 
-            {/* Links */}
             {navLinks.map((link, i) => (
               <motion.button
+                type="button"
                 key={link.href}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -293,8 +293,8 @@ export default function Navbar() {
               </motion.button>
             ))}
 
-            {/* CTA Mobile */}
             <motion.button
+              type="button"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.75 }}
@@ -323,7 +323,6 @@ export default function Navbar() {
             >
               Reservar Mesa
             </motion.button>
-
           </motion.div>
         )}
       </AnimatePresence>
