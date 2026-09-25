@@ -18,10 +18,10 @@ export default function Footer() {
         style={{
           maxWidth: "1280px",
           margin: "0 auto",
-          padding: "48px 32px",
+          padding: "clamp(32px, 6vw, 48px) clamp(16px, 4vw, 32px)",
         }}
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12">
           <div
             style={{
               display: "flex",
@@ -308,7 +308,7 @@ export default function Footer() {
       <div
         style={{
           borderTop: "1px solid rgba(255,255,255,0.04)",
-          padding: "16px 32px",
+          padding: "16px clamp(16px, 4vw, 32px)",
           maxWidth: "1280px",
           margin: "0 auto",
           display: "flex",

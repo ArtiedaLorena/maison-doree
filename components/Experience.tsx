@@ -66,20 +66,20 @@ export default function Experience() {
             Más que una cena
           </p>
           <h2
-            className="text-5xl md:text-6xl font-light text-white"
+            className="text-4xl sm:text-5xl md:text-6xl font-light text-white"
             style={{ fontFamily: "var(--font-cormorant)" }}
           >
             La <span className="text-gradient italic">Experiencia</span>
           </h2>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Gallery Grid */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="grid grid-cols-3 grid-rows-3 gap-3 h-[500px]"
+            className="grid grid-cols-2 sm:grid-cols-3 sm:grid-rows-3 gap-2 sm:gap-3 h-auto sm:h-[420px] md:h-[500px]"
           >
             {images.map((img, i) => (
               <motion.div
@@ -87,7 +87,7 @@ export default function Experience() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={isInView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ duration: 0.6, delay: 0.2 + i * 0.1 }}
-                className={`overflow-hidden ${img.className} group`}
+                className={`overflow-hidden min-h-[140px] sm:min-h-0 ${img.className} group`}
               >
                 <img
                   src={img.src}

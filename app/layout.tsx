@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Montserrat } from "next/font/google";
 import "./globals.css";
 
@@ -18,6 +18,12 @@ const montserrat = Montserrat({
 
 const siteUrl = "https://maisondoree.com.ar";
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#1A1A1A",
+};
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Maison Dorée | Fine Dining en Recoleta, Buenos Aires",

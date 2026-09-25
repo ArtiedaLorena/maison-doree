@@ -25,9 +25,9 @@ export default function About() {
             initial={{ opacity: 0, x: -60 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8 }}
-            className="relative"
+            className="relative max-w-full"
           >
-            <div className="relative aspect-[3/4] overflow-hidden">
+            <div className="relative aspect-[3/4] overflow-hidden max-w-full">
               <img
                 src="https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=800&q=80"
                 alt="Interior de Maison Dorée - Ambiente elegante"
@@ -42,7 +42,7 @@ export default function About() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={isInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="absolute -bottom-6 -right-6 w-32 h-32 glass-light border border-[#C9A96E]/30 flex flex-col items-center justify-center"
+              className="absolute -bottom-4 right-2 sm:-bottom-6 sm:-right-4 md:-right-6 w-24 h-24 sm:w-32 sm:h-32 glass-light border border-[#C9A96E]/30 flex flex-col items-center justify-center"
             >
               <span
                 className="text-4xl font-bold text-gradient"
@@ -59,7 +59,7 @@ export default function About() {
             </motion.div>
 
             {/* Línea decorativa */}
-            <div className="absolute -top-4 -left-4 w-24 h-24 border-t border-l border-[#C9A96E]/30" />
+            <div className="absolute -top-2 -left-2 sm:-top-4 sm:-left-4 w-16 h-16 sm:w-24 sm:h-24 border-t border-l border-[#C9A96E]/30" />
           </motion.div>
 
           {/* Contenido */}
@@ -76,9 +76,9 @@ export default function About() {
             </p>
 
             <h2
-              className="text-5xl md:text-6xl font-light text-white mb-6 leading-tight"
-              style={{ fontFamily: "var(--font-cormorant)" }}
-            >
+            className="text-4xl sm:text-5xl md:text-6xl font-light text-white mb-6 leading-tight"
+            style={{ fontFamily: "var(--font-cormorant)" }}
+          >
               Una pasión por la{" "}
               <span className="text-gradient italic">excelencia</span>
             </h2>

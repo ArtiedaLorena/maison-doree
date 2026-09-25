@@ -36,7 +36,7 @@ export default function Testimonials() {
             Lo que dicen
           </p>
           <h2
-            className="text-5xl md:text-6xl font-light text-white"
+            className="text-4xl sm:text-5xl md:text-6xl font-light text-white"
             style={{ fontFamily: "var(--font-cormorant)" }}
           >
             Nuestros <span className="text-gradient italic">Huéspedes</span>
@@ -165,14 +165,14 @@ export default function Testimonials() {
             <motion.button
               type="button"
               key={t.name}
-              whileHover={{ borderColor: "rgba(201, 169, 110, 0.3)", y: -4 }}
+              whileHover={{ y: -4 }}
               onClick={() => setCurrent(i)}
               aria-pressed={i === current}
               aria-label={`Ver testimonio de ${t.name}`}
               className={`p-6 border cursor-pointer transition-all duration-300 text-left w-full ${
                 i === current
-                  ? "border-[#C9A96E]/30 bg-[#C9A96E]/5"
-                  : "border-white/5 hover:bg-white/5"
+                  ? "border-[rgba(201,169,110,0.3)] bg-[rgba(201,169,110,0.05)]"
+                  : "border-[rgba(255,255,255,0.05)] hover:border-[rgba(201,169,110,0.3)] hover:bg-[rgba(255,255,255,0.05)]"
               }`}
             >
               {/* Stars */}

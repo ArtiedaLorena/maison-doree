@@ -1,22 +1,15 @@
 "use client";
 
-import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 
 export default function Hero() {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 600], ["0%", "40%"]);
+  const opacity = useTransform(scrollY, [0, 400], [1, 0]);
 
   return (
     <section
-      ref={ref}
       className="relative h-screen w-full overflow-hidden"
       aria-label="Hero section"
     >
@@ -51,12 +44,14 @@ export default function Hero() {
           transition={{ duration: 1, delay: 0.5 }}
           style={{
             fontFamily: "var(--font-cormorant)",
-            fontSize: "clamp(5rem, 12vw, 10rem)",
+            fontSize: "clamp(3rem, 14vw, 10rem)",
             fontWeight: 300,
             color: "white",
             lineHeight: 0.95,
             marginBottom: "24px",
             textShadow: "0 4px 24px rgba(0,0,0,0.6)",
+            maxWidth: "100%",
+            padding: "0 8px",
           }}
         >
           Maison
@@ -71,11 +66,13 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.8 }}
           style={{
             fontFamily: "var(--font-montserrat)",
-            fontSize: "12px",
-            letterSpacing: "0.35em",
+            fontSize: "clamp(10px, 2.5vw, 12px)",
+            letterSpacing: "0.2em",
             textTransform: "uppercase",
             color: "rgba(255,255,255,0.9)",
             textShadow: "0 2px 12px rgba(0,0,0,0.8)",
+            maxWidth: "90vw",
+            padding: "0 16px",
           }}
         >
           Cocina francesa con alma argentina
@@ -106,7 +103,7 @@ export default function Hero() {
           }}
         >
           <motion.button
-            whileHover={{ scale: 1.05, color: "#ffffff" }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() =>
               document
@@ -114,16 +111,25 @@ export default function Hero() {
                 ?.scrollIntoView({ behavior: "smooth" })
             }
             style={{
-              padding: "14px 48px",
+              padding: "12px clamp(20px, 6vw, 48px)",
               background: "transparent",
               border: "1px solid rgba(255,255,255,0.3)",
               color: "rgba(255,255,255,0.85)",
               fontSize: "11px",
-              letterSpacing: "0.25em",
+              letterSpacing: "0.2em",
               textTransform: "uppercase",
               cursor: "pointer",
               fontFamily: "var(--font-montserrat)",
               whiteSpace: "nowrap",
+              transition: "color 0.3s ease, border-color 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = "#ffffff";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.6)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "rgba(255,255,255,0.85)";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
             }}
           >
             Ver Menú

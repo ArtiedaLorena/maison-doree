@@ -38,7 +38,7 @@ export default function Menu() {
             Nuestra Propuesta
           </p>
           <h2
-            className="text-5xl md:text-6xl font-light text-white mb-4"
+            className="text-4xl sm:text-5xl md:text-6xl font-light text-white mb-4"
             style={{ fontFamily: "var(--font-cormorant)" }}
           >
             El <span className="text-gradient italic">Menú</span>
@@ -123,7 +123,7 @@ export default function Menu() {
                     </p>
                   </div>
                   <span
-                    className="text-[#C9A96E] text-xl font-light whitespace-nowrap"
+                    className="text-[#C9A96E] text-lg sm:text-xl font-light whitespace-nowrap shrink-0"
                     style={{ fontFamily: "var(--font-cormorant)" }}
                   >
                     {item.price}

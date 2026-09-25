@@ -76,7 +76,7 @@ export default function Navbar() {
             width: "100%",
             maxWidth: "1280px",
             margin: "0 auto",
-            padding: "0 32px",
+            padding: "0 clamp(16px, 4vw, 32px)",
           }}
         >
           <div
@@ -158,11 +158,7 @@ export default function Navbar() {
 
             <motion.button
               type="button"
-              whileHover={{
-                backgroundColor: "#C9A96E",
-                color: "#1A1A1A",
-                scale: 1.03,
-              }}
+              whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => handleNavClick("#reservations")}
               className="hidden md:flex"
@@ -177,9 +173,17 @@ export default function Navbar() {
                 background: "transparent",
                 cursor: "pointer",
                 flexShrink: 0,
-                transition: "all 0.3s ease",
+                transition: "background-color 0.3s ease, color 0.3s ease",
                 alignItems: "center",
                 whiteSpace: "nowrap",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#C9A96E";
+                e.currentTarget.style.color = "#1A1A1A";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = "#C9A96E";
               }}
             >
               Reservar Mesa
@@ -271,9 +275,9 @@ export default function Navbar() {
                 onClick={() => handleNavClick(link.href)}
                 style={{
                   fontFamily: "var(--font-cormorant)",
-                  fontSize: "2.2rem",
+                  fontSize: "clamp(1.6rem, 7vw, 2.2rem)",
                   fontWeight: 300,
-                  letterSpacing: "0.15em",
+                  letterSpacing: "0.12em",
                   textTransform: "uppercase",
                   color: "rgba(255,255,255,0.75)",
                   background: "none",

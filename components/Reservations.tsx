@@ -110,7 +110,7 @@ export default function Reservations() {
     <section
       id="reservations"
       ref={ref}
-      style={{ background: "#1E1E1E", position: "relative", padding: "96px 0" }}
+      style={{ background: "#1E1E1E", position: "relative", padding: "clamp(64px, 10vw, 96px) 0" }}
     >
       <div
         style={{
@@ -121,9 +121,9 @@ export default function Reservations() {
       />
 
       <div
-        style={{ position: "relative", zIndex: 10, maxWidth: "1280px", margin: "0 auto", padding: "0 24px" }}
+        style={{ position: "relative", zIndex: 10, maxWidth: "1280px", margin: "0 auto", padding: "0 clamp(16px, 4vw, 24px)" }}
       >
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
