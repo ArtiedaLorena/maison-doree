@@ -52,10 +52,17 @@ export default function Menu() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex justify-center gap-2 sm:gap-4 mb-12 flex-wrap"
+          role="tablist"
+          aria-label="Categorías del menú"
         >
           {MENU_CATEGORIES.map((cat) => (
             <button
               key={cat.id}
+              type="button"
+              role="tab"
+              aria-selected={activeCategory === cat.id}
+              aria-controls={`menu-panel-${cat.id}`}
+              id={`menu-tab-${cat.id}`}
               onClick={() => setActiveCategory(cat.id)}
               className={`px-6 py-2.5 text-xs tracking-widest uppercase transition-all duration-300 border ${
                 activeCategory === cat.id
@@ -77,6 +84,9 @@ export default function Menu() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.4 }}
+            id={`menu-panel-${activeCategory}`}
+            role="tabpanel"
+            aria-labelledby={`menu-tab-${activeCategory}`}
             className="grid sm:grid-cols-2 gap-4 md:gap-6"
           >
             {currentCategory?.items.map((item, i) => (

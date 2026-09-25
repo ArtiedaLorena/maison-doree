@@ -6,8 +6,6 @@
     --gold-light: #E8D5B0;
     --dark: #1A1A1A;
     --dark-secondary: #2A2A2A;
-    --font-cormorant: "Cormorant Garamond", serif;
-    --font-montserrat: "Montserrat", sans-serif;
   }
 
   html {
@@ -18,7 +16,7 @@
   body {
     background-color: #1A1A1A;
     color: white;
-    font-family: var(--font-cormorant);
+    font-family: var(--font-cormorant), Georgia, serif;
   }
 
   ::selection {
@@ -37,6 +35,41 @@
   ::-webkit-scrollbar-thumb {
     background-color: #C9A96E;
     border-radius: 9999px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .nav-link:hover {
+    color: #C9A96E !important;
+  }
+
+  .nav-underline {
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0%;
+    height: 1px;
+    background: #C9A96E;
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover .nav-underline {
+    width: 100%;
   }
 }
 

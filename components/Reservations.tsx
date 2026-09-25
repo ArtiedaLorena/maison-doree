@@ -1,13 +1,19 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { Clock, MessageSquare, CheckCircle } from "lucide-react";
+import { Clock, Phone, Mail, CheckCircle } from "lucide-react";
 import { RESTAURANT_INFO } from "@/lib/constants";
+import { submitReservation } from "@/app/actions/reservations";
 
-const timeSlots = [
+const weekdaySlots = [
   "12:00", "12:30", "13:00", "13:30", "14:00",
   "20:00", "20:30", "21:00", "21:30", "22:00", "22:30",
+];
+
+const weekendSlots = [
+  "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
+  "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00",
 ];
 
 const guestOptions = [
@@ -15,22 +21,67 @@ const guestOptions = [
   "4 personas", "5 personas", "6+ personas",
 ];
 
+const emptyForm = {
+  name: "",
+  email: "",
+  phone: "",
+  date: "",
+  time: "",
+  guests: "",
+  message: "",
+};
+
+function getLocalMinDate() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const d = String(now.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function getTimeSlotsForDate(dateStr: string) {
+  if (!dateStr) return weekdaySlots;
+  const date = new Date(`${dateStr}T12:00:00`);
+  const day = date.getDay();
+  const isWeekend = day === 0 || day === 6;
+  return isWeekend ? weekendSlots : weekdaySlots;
+}
+
 export default function Reservations() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({
-    name: "", email: "", phone: "",
-    date: "", time: "", guests: "", message: "",
-  });
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState(emptyForm);
+  const minDate = useMemo(() => getLocalMinDate(), []);
+  const timeSlots = useMemo(() => getTimeSlotsForDate(form.date), [form.date]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setLoading(false);
-    setSubmitted(true);
+
+    try {
+      const result = await submitReservation(form);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+
+      window.open(result.whatsappUrl, "_blank", "noopener,noreferrer");
+      setSubmitted(true);
+    } catch {
+      setError("No pudimos enviar la reserva. Intentá de nuevo.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    setForm(emptyForm);
+    setSubmitted(false);
+    setError(null);
   };
 
   const inputStyle = {
@@ -61,7 +112,6 @@ export default function Reservations() {
       ref={ref}
       style={{ background: "#1E1E1E", position: "relative", padding: "96px 0" }}
     >
-      {/* Overlay oscuro sólido — sin imagen de fondo */}
       <div
         style={{
           position: "absolute",
@@ -74,8 +124,6 @@ export default function Reservations() {
         style={{ position: "relative", zIndex: 10, maxWidth: "1280px", margin: "0 auto", padding: "0 24px" }}
       >
         <div className="grid lg:grid-cols-2 gap-16 items-start">
-
-          {/* Info */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
@@ -117,15 +165,15 @@ export default function Reservations() {
             >
               Te recomendamos reservar con al menos 48hs de anticipación.
               Para grupos de más de 6 personas, contactanos directamente.
+              Al confirmar, abrimos WhatsApp con tu pedido listo para enviar.
             </p>
 
-            {/* Info contacto */}
             <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
               {[
                 { icon: Clock, label: "Horarios", value: RESTAURANT_INFO.hours.weekdays },
                 { icon: Clock, label: "Fines de semana", value: RESTAURANT_INFO.hours.weekends },
-                { icon: MessageSquare, label: "Teléfono", value: RESTAURANT_INFO.phone },
-                { icon: MessageSquare, label: "Email", value: RESTAURANT_INFO.email },
+                { icon: Phone, label: "Teléfono", value: RESTAURANT_INFO.phone, href: `tel:${RESTAURANT_INFO.phone.replace(/\s/g, "")}` },
+                { icon: Mail, label: "Email", value: RESTAURANT_INFO.email, href: `mailto:${RESTAURANT_INFO.email}` },
               ].map((item) => (
                 <div key={item.label} style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
                   <div
@@ -154,22 +202,35 @@ export default function Reservations() {
                     >
                       {item.label}
                     </p>
-                    <p
-                      style={{
-                        color: "rgba(255,255,255,0.85)",
-                        fontSize: "14px",
-                        fontFamily: "var(--font-montserrat)",
-                      }}
-                    >
-                      {item.value}
-                    </p>
+                    {"href" in item && item.href ? (
+                      <a
+                        href={item.href}
+                        style={{
+                          color: "rgba(255,255,255,0.85)",
+                          fontSize: "14px",
+                          fontFamily: "var(--font-montserrat)",
+                          textDecoration: "none",
+                        }}
+                      >
+                        {item.value}
+                      </a>
+                    ) : (
+                      <p
+                        style={{
+                          color: "rgba(255,255,255,0.85)",
+                          fontSize: "14px",
+                          fontFamily: "var(--font-montserrat)",
+                        }}
+                      >
+                        {item.value}
+                      </p>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           </motion.div>
 
-          {/* Form */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
@@ -198,21 +259,39 @@ export default function Reservations() {
                     marginBottom: "8px",
                   }}
                 >
-                  ¡Reserva recibida!
+                  ¡Listo para confirmar!
                 </h3>
-                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "14px", fontFamily: "var(--font-montserrat)" }}>
-                  Te contactaremos en las próximas 2 horas para confirmar.
+                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "14px", fontFamily: "var(--font-montserrat)", marginBottom: "24px", maxWidth: "320px" }}>
+                  Abrimos WhatsApp con tu reserva. Enviá el mensaje para que podamos confirmarla.
                 </p>
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  style={{
+                    padding: "12px 28px",
+                    border: "1px solid rgba(201,169,110,0.5)",
+                    color: "#C9A96E",
+                    background: "transparent",
+                    cursor: "pointer",
+                    fontFamily: "var(--font-montserrat)",
+                    fontSize: "11px",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Nueva reserva
+                </button>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-
+              <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }} noValidate>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label style={labelStyle}>Nombre completo *</label>
+                    <label htmlFor="reservation-name" style={labelStyle}>Nombre completo *</label>
                     <input
+                      id="reservation-name"
                       type="text"
                       required
+                      autoComplete="name"
                       placeholder="Juan García"
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -220,10 +299,12 @@ export default function Reservations() {
                     />
                   </div>
                   <div>
-                    <label style={labelStyle}>Email *</label>
+                    <label htmlFor="reservation-email" style={labelStyle}>Email *</label>
                     <input
+                      id="reservation-email"
                       type="email"
                       required
+                      autoComplete="email"
                       placeholder="juan@email.com"
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -234,9 +315,12 @@ export default function Reservations() {
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label style={labelStyle}>Teléfono</label>
+                    <label htmlFor="reservation-phone" style={labelStyle}>Teléfono *</label>
                     <input
+                      id="reservation-phone"
                       type="tel"
+                      required
+                      autoComplete="tel"
                       placeholder="+54 11 ..."
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -244,8 +328,9 @@ export default function Reservations() {
                     />
                   </div>
                   <div>
-                    <label style={labelStyle}>Personas *</label>
+                    <label htmlFor="reservation-guests" style={labelStyle}>Personas *</label>
                     <select
+                      id="reservation-guests"
                       required
                       value={form.guests}
                       onChange={(e) => setForm({ ...form, guests: e.target.value })}
@@ -261,19 +346,29 @@ export default function Reservations() {
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label style={labelStyle}>Fecha *</label>
+                    <label htmlFor="reservation-date" style={labelStyle}>Fecha *</label>
                     <input
+                      id="reservation-date"
                       type="date"
                       required
                       value={form.date}
-                      onChange={(e) => setForm({ ...form, date: e.target.value })}
-                      min={new Date().toISOString().split("T")[0]}
+                      onChange={(e) => {
+                        const nextDate = e.target.value;
+                        const slots = getTimeSlotsForDate(nextDate);
+                        setForm({
+                          ...form,
+                          date: nextDate,
+                          time: slots.includes(form.time) ? form.time : "",
+                        });
+                      }}
+                      min={minDate}
                       style={{ ...inputStyle, colorScheme: "dark" }}
                     />
                   </div>
                   <div>
-                    <label style={labelStyle}>Horario *</label>
+                    <label htmlFor="reservation-time" style={labelStyle}>Horario *</label>
                     <select
+                      id="reservation-time"
                       required
                       value={form.time}
                       onChange={(e) => setForm({ ...form, time: e.target.value })}
@@ -288,8 +383,9 @@ export default function Reservations() {
                 </div>
 
                 <div>
-                  <label style={labelStyle}>Nota especial</label>
+                  <label htmlFor="reservation-message" style={labelStyle}>Nota especial</label>
                   <textarea
+                    id="reservation-message"
                     rows={3}
                     placeholder="Alergias, celebraciones, pedidos especiales..."
                     value={form.message}
@@ -298,11 +394,24 @@ export default function Reservations() {
                   />
                 </div>
 
+                {error && (
+                  <p
+                    role="alert"
+                    style={{
+                      color: "#f87171",
+                      fontSize: "13px",
+                      fontFamily: "var(--font-montserrat)",
+                    }}
+                  >
+                    {error}
+                  </p>
+                )}
+
                 <motion.button
                   type="submit"
                   disabled={loading}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ scale: loading ? 1 : 1.02 }}
+                  whileTap={{ scale: loading ? 1 : 0.98 }}
                   style={{
                     width: "100%",
                     padding: "16px",
@@ -319,13 +428,11 @@ export default function Reservations() {
                     transition: "background 0.3s",
                   }}
                 >
-                  {loading ? "Enviando..." : "Confirmar Reserva"}
+                  {loading ? "Preparando..." : "Reservar por WhatsApp"}
                 </motion.button>
-
               </form>
             )}
           </motion.div>
-
         </div>
       </div>
     </section>

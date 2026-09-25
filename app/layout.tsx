@@ -16,7 +16,10 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
+const siteUrl = "https://maisondoree.com.ar";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Maison Dorée | Fine Dining en Recoleta, Buenos Aires",
   description:
     "Restaurante de alta cocina francesa en el corazón de Recoleta. Reservá tu mesa y viví una experiencia gastronómica única con los mejores ingredientes y técnicas culinarias.",
@@ -29,29 +32,23 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Maison Dorée" }],
   creator: "Maison Dorée",
+  alternates: {
+    canonical: siteUrl,
+  },
   openGraph: {
     type: "website",
     locale: "es_AR",
-    url: "https://maisondoree.com.ar",
+    url: siteUrl,
     title: "Maison Dorée | Fine Dining en Recoleta, Buenos Aires",
     description:
       "Restaurante de alta cocina francesa en el corazón de Recoleta. Una experiencia gastronómica única desde 1998.",
     siteName: "Maison Dorée",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Maison Dorée - Fine Dining Buenos Aires",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Maison Dorée | Fine Dining en Recoleta",
     description:
       "Una experiencia gastronómica única en el corazón de Buenos Aires.",
-    images: ["/og-image.jpg"],
   },
   robots: {
     index: true,
@@ -63,9 +60,6 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
-  },
-  verification: {
-    google: "tu-google-verification-code",
   },
 };
 

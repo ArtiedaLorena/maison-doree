@@ -162,14 +162,17 @@ export default function Testimonials() {
           className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-20"
         >
           {TESTIMONIALS.map((t, i) => (
-            <motion.div
+            <motion.button
+              type="button"
               key={t.name}
               whileHover={{ borderColor: "rgba(201, 169, 110, 0.3)", y: -4 }}
               onClick={() => setCurrent(i)}
-              className={`p-6 border cursor-pointer transition-all duration-300 ${
+              aria-pressed={i === current}
+              aria-label={`Ver testimonio de ${t.name}`}
+              className={`p-6 border cursor-pointer transition-all duration-300 text-left w-full ${
                 i === current
                   ? "border-[#C9A96E]/30 bg-[#C9A96E]/5"
-                  : "border-white/5 hover:bg-white/2"
+                  : "border-white/5 hover:bg-white/5"
               }`}
             >
               {/* Stars */}
@@ -212,7 +215,7 @@ export default function Testimonials() {
                   </p>
                 </div>
               </div>
-            </motion.div>
+            </motion.button>
           ))}
         </motion.div>
 

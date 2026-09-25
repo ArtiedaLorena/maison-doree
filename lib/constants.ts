@@ -11,9 +11,10 @@ export const RESTAURANT_INFO = {
     weekends: "Sáb - Dom: 12:00 - 16:00 / 20:00 - 00:00",
   },
   social: {
-    instagram: "https://instagram.com",
-    facebook: "https://facebook.com",
-    tripadvisor: "https://tripadvisor.com",
+    instagram: "https://www.instagram.com/maisondoree/",
+    facebook: "https://www.facebook.com/maisondoree",
+    tripadvisor:
+      "https://www.tripadvisor.com.ar/Search?q=Maison+Doree+Recoleta",
   },
 };
 

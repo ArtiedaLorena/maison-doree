@@ -3,7 +3,6 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Award, Clock, Users, Star } from "lucide-react";
-import { RESTAURANT_INFO } from "@/lib/constants";
 
 const stats = [
   { icon: Award, value: "25+", label: "Años de excelencia" },
