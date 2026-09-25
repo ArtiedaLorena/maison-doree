@@ -91,6 +91,45 @@
   .nav-link:hover .nav-underline {
     width: 100%;
   }
+
+  .hero-kenburns {
+    transform: scale(1.08);
+    animation: hero-kenburns 12s ease-out forwards;
+  }
+
+  .hero-scroll-cue {
+    animation: hero-bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes hero-kenburns {
+    from {
+      transform: scale(1.14);
+    }
+    to {
+      transform: scale(1.08);
+    }
+  }
+
+  @keyframes hero-bounce {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(6px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-kenburns,
+    .hero-scroll-cue {
+      animation: none;
+    }
+
+    .hero-kenburns {
+      transform: scale(1.08);
+    }
+  }
 }
 
 @layer utilities {
